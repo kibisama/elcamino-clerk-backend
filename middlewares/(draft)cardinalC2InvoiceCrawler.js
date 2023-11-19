@@ -1,6 +1,5 @@
 const puppeteer = require('puppeteer');
-const { CardinalC2Invoice } = require('./models');
-// const { CardinalC2Invoice } = require('../models');
+const { CardinalC2Invoice } = require('../models/cardinalC2Invoice');
 
 const crawler1 = async () => {
   try {
@@ -14,11 +13,11 @@ const crawler1 = async () => {
     // 랜덤 딜레이와 로그를 생성하는 함수
     const setRandomDelay = async (msg = '') => {
       const setTime = await page.evaluate(async () => {
-        const randomTime = (Math.random() * 5 + 5).toFixed(3);
+        const randomTime = (Math.random() * 3 + 3).toFixed(3) * 1000;
         await new Promise((r) => setTimeout(r, randomTime));
         return randomTime;
       });
-      console.log(`waitTime[${msg}]: `, setTime);
+      console.log(`waitTime[${msg}]: `, setTime, ' ms');
       return setTime;
     };
     // XPath를 사용 해 element를 검색하고 첫번째 결과(혹은 두번째 인수 값)의 텍스트를 반환하는 함수
@@ -61,6 +60,21 @@ const crawler1 = async () => {
         await setRandomDelay('Order History Page');
       } else {
         throw new Error('Order History Link not found');
+      }
+    };
+    // 첫번째 위치한 Next 30 Days 링크를 클릭하는 함수
+    const clickNext30DaysLink = async () => {
+      const next30DaysLink = await page.$x(
+        '//a[@class= "commandLink"] //span[contains(text(), "Next 30 Days>>")]',
+      );
+      if (next30DaysLink.length > 0) {
+        await next30DaysLink[0].click();
+        await page.waitForNavigation({ waitUntil: 'networkidle0' });
+        await setRandomDelay('Next 30 Days Invoices Loaded');
+        return next30DaysLink[0];
+      } else {
+        console.log('Next 30 Days Link not found');
+        return null;
       }
     };
 
@@ -186,13 +200,13 @@ const crawler1 = async () => {
     await page.type('input[id="okta-signin-username"]', id);
     await page.type('input[id="okta-signin-password"]', password);
     await page.click('input[id="okta-signin-submit"]');
-    await new Promise((r) => setTimeout(r, 15000));
+    await new Promise((r) => setTimeout(r, 10000));
     await setRandomDelay('Home Page');
 
     // Order History 페이지 로드
     await clickOrderHistoryLink();
 
-    // 30 Days+ 선택후 재검색
+    // 30 Days+ 선택 후 페이지 로드
     const daySelector = await page.$x(
       '//table[@class= "tableColHdrHome actionBarOrderHistory"] //td[@class= "selectDateTblCol2"] //select',
     );
@@ -212,10 +226,17 @@ const crawler1 = async () => {
     }
 
     // 페이지에 표시된 CSONumber와 DB에 없는 CSONumber를 찾아 변수로 할당 합니다.
-    const { pageCSONumbers, newCSONumbers } = await findNewCSONumbers();
-    const dataCreated = await clickInvoiceNumberAndCollectData(
-      newCSONumbers[0],
-    );
+    for (let i = 0; i < 3; i++) {
+      const { pageCSONumbers, newCSONumbers } = await findNewCSONumbers();
+      for (const csoNumber of newCSONumbers) {
+        await clickInvoiceNumberAndCollectData(csoNumber);
+      }
+      const nextButton = await clickNext30DaysLink();
+      if (!nextButton) {
+        console.log('End of Order History');
+        break;
+      }
+    }
   } catch (e) {
     console.log(e);
   }
