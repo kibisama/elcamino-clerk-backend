@@ -11,7 +11,7 @@ const cardinalInvoiceSchema = new Schema({
     unique: true,
   },
   invoiceDate: {
-    type: Date,
+    type: String,
     required: true,
   },
   invoiceType: {
@@ -20,7 +20,6 @@ const cardinalInvoiceSchema = new Schema({
   },
   csoNumber: {
     type: String,
-    unique: true,
   },
   item: {
     type: [ObjectId],
@@ -28,15 +27,19 @@ const cardinalInvoiceSchema = new Schema({
     ref: 'Drug',
   },
   cost: {
-    type: [Number],
+    type: [String],
     required: true,
   },
   orderQty: {
-    type: [Number],
+    type: [String],
     required: true,
   },
   shipQty: {
-    type: [Number],
+    type: [String],
+    required: true,
+  },
+  omitCode: {
+    type: [String],
     required: true,
   },
 });

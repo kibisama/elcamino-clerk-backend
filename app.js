@@ -1,3 +1,5 @@
+// TODO: Puppeteer 요청은 새로운 thread 혹은 process에서 실행하거나 Nodejs에서는 요청만 받은 후 Python 등 외부 프로세스에서 코드를 실행하는 방법을 생각해 보자
+
 const fs = require('fs');
 fs.readdir('drugimg', (err) => {
   if (err) {
@@ -15,6 +17,8 @@ const morgan = require('morgan');
 const dotenv = require('dotenv');
 dotenv.config();
 
+// process.env.TZ = 'America/Los_Angeles';
+
 // Routers
 const indexRouter = require('./routes/index');
 const cardinalRouter = require('./routes/cardinal');
@@ -25,6 +29,7 @@ const connect = require('./schemas');
 const app = express();
 app.set('port', process.env.PORT || 3001);
 connect();
+
 // MySql 서버 동기화
 // const { sequelize } = require('./models');
 // sequelize

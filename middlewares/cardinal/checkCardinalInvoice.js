@@ -13,19 +13,15 @@ const checkCardinalInvoice = async (req, res, next) => {
     collectInvoiceData,
   } = req.app.get('cardinalPuppet');
   const { date, forceUpdate } = req.body;
-  await clickOrderHistoryLink(page);
+  await clickOrderHistoryLink(page, true);
   const { pageInvoiceNumbers, newInvoiceNumbers } = await findNewInvoiceNumbers(
     page,
     date,
   );
-  const results = [];
+  // TODO: req.body.date의 날짜가 현재 검색중인 페이지 결과 최대일자보다 30일 이후 일 경우 검색 중단하고 Invoice Not Found 에러 결과를 Send 한다.
+
+  const data = { results: [], error: null };
   if (pageInvoiceNumbers.length > 0) {
-    if (newInvoiceNumbers.length === 0 && !forceUpdate) {
-      for (const invoiceNumber of pageInvoiceNumbers) {
-        results.push(await CardinalInvoice.findOne({ invoiceNumber }));
-      }
-      res.send({ data: results });
-    }
     for (const invoiceNumber of pageInvoiceNumbers) {
       await (
         await page.$x(
@@ -48,14 +44,13 @@ const checkCardinalInvoice = async (req, res, next) => {
           await collectProductData(page, newCIN, 'Invoice Detail');
         }
       }
-      results.push(await collectInvoiceData(page, invoiceNumber));
+      data.results.push(await collectInvoiceData(page, invoiceNumber));
       await clickOrderHistoryLink(page);
-      await page.waitForNavigation(waitForOptions);
     }
-    res.send({ data: results });
   } else {
-    res.send({ error: 'Invoice Not Found' });
+    data.error = 'Invoice Not Found';
   }
-  res.send({ data: results });
+
+  res.send(data);
 };
 module.exports = checkCardinalInvoice;
