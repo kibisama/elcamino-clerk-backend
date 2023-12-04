@@ -311,7 +311,7 @@ const cardinalPuppet = async () => {
 
       // DetailedView모드로 변경 페이지 로드 대기
       while (true) {
-        await new Promise((r) => setTimeout(r, 5000));
+        await new Promise((r) => setTimeout(r, 3000));
         const viewSelector = await _page.$x(
           '//option[contains(text(), "24 Month Summary View")] /..',
         );
@@ -322,7 +322,7 @@ const cardinalPuppet = async () => {
       }
 
       while (true) {
-        await new Promise((r) => setTimeout(r, 5000));
+        await new Promise((r) => setTimeout(r, 3000));
         const dataTableFound = await _page.$x(
           '//th[@class= "psrDataTableBorder"] //span[contains(text(), "Order Date")]',
         );
@@ -381,8 +381,10 @@ const cardinalPuppet = async () => {
       }
       const dateLastUpdatedCardinal = new Date(Date.now());
       const result = await Drug.findOneAndUpdate(
-        { cin, ndc, upc },
+        { ndc },
         {
+          cin,
+          upc,
           labelName,
           genericName,
           strength,

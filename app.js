@@ -22,6 +22,7 @@ dotenv.config();
 // Routers
 const indexRouter = require('./routes/index');
 const cardinalRouter = require('./routes/cardinal');
+const mongodRouter = require('./routes/mongod');
 
 const cardinalPuppet = require('./middlewares/cardinal/cardinalPuppet');
 
@@ -47,6 +48,7 @@ app.use(express.urlencoded({ extended: false }));
 
 app.use('/', indexRouter);
 app.use('/cardinal', cardinalRouter);
+app.use('/mongod', mongodRouter);
 
 app.use((req, res, next) => {
   const error = new Error(`${req.method} ${req.url} 라우터가 없습니다.`);
