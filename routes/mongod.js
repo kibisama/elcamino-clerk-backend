@@ -7,13 +7,27 @@ const Drug = require('../schemas/drug');
 const router = express.Router();
 
 router.post('/drugs/search', async (req, res, next) => {
-  const { cin, ndc, upc, term } = req.body;
+  const { _id, cin, ndc, upc, term } = req.body;
   // const results = await Drug.find({ $text: { $search: term, $ } });
 
-  // TODO: 자동완성에 필요한 데이터만 Select 후 send한다
-  const results = await Drug.find({
-    $or: [{ labelName: { $regex: '^' + term, $options: 'i' } }],
-  });
+  // TODO: 자동완성에 필요한 데이터만 Select 후 send한다?
+  let results;
+  switch (true) {
+    case cin:
+      break;
+    case ndc:
+      break;
+    case upc:
+      break;
+    case term:
+      results = await Drug.find({
+        $or: [{ labelName: { $regex: '^' + term, $options: 'i' } }],
+      });
+      break;
+    default:
+      res.send({ error: 'Invalid Query' });
+  }
+
   if (results.length > 0) {
     res.send({ error: null, results });
   } else {

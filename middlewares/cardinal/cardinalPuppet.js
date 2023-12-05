@@ -482,8 +482,8 @@ const cardinalPuppet = async () => {
         ).filter((v, i) => i % 2 === 0);
         // .map((v) => Number(v.replace(/[$,]/g, '')));
 
-        omitCode = columnLgSmall.filter((v, i) => i % 2 !== 0);
-        const itemClass = columnLgSmall.filter((v, i) => i % 2 === 0);
+        omitCode = columnLgSmall.filter((v, i) => i % 2 === 0);
+        const itemClass = columnLgSmall.filter((v, i) => i % 2 !== 0);
 
         switch (true) {
           case itemClass.includes('C2') && poNumber !== '':
@@ -547,7 +547,9 @@ const cardinalPuppet = async () => {
           omitCode,
         },
         { new: true, upsert: true },
-      ).catch((e) => console.log(e));
+      )
+        .populate('item')
+        .catch((e) => console.log(e));
 
       switch (from) {
         case 'Order History':

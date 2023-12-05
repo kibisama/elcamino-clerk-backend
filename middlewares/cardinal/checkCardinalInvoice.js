@@ -11,6 +11,7 @@ const checkCardinalInvoice = async (req, res, next) => {
     findNewCINs,
     collectProductData,
     collectInvoiceData,
+    clickHomeLink,
   } = req.app.get('cardinalPuppet');
   const { date, forceUpdate } = req.body;
   await clickOrderHistoryLink(page, true);
@@ -50,7 +51,7 @@ const checkCardinalInvoice = async (req, res, next) => {
   } else {
     data.error = 'Invoice Not Found';
   }
-
+  await clickHomeLink(page);
   res.send(data);
 };
 module.exports = checkCardinalInvoice;

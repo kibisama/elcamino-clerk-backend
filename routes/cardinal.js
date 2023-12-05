@@ -10,7 +10,9 @@ router.get('/', reloadCardinal);
 router.post('/checkInvoice', async (req, res, next) => {
   const { date, forceUpdate } = req.body;
   if (!forceUpdate) {
-    const results = await CardinalInvoice.find({ invoiceDate: date });
+    const results = await CardinalInvoice.find({ invoiceDate: date }).populate(
+      'item',
+    );
     if (results.length > 0) {
       res.send({ error: null, results });
     } else {
