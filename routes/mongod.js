@@ -11,15 +11,15 @@ router.post('/drugs/search', async (req, res, next) => {
   // const results = await Drug.find({ $text: { $search: term, $ } });
 
   // TODO: 자동완성에 필요한 데이터만 Select 후 send한다?
-  let results;
+  let results = [];
   switch (true) {
-    case cin:
+    case !!cin:
       break;
-    case ndc:
+    case !!ndc:
       break;
-    case upc:
+    case !!upc:
       break;
-    case term:
+    case !!term:
       results = await Drug.find({
         $or: [{ labelName: { $regex: '^' + term, $options: 'i' } }],
       });

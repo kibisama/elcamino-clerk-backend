@@ -41,11 +41,11 @@ const drugSchema = new Schema({
   dateLastUpdatedKeySource: Date,
   dateLastUpdatedSmartSource: Date,
   isGeneric: Boolean,
-  isCardinalPriceMatched: Boolean,
   lastDateCardinalPriceMatched: Date,
   ourPricePerUnit: Number,
   ourBatchQty: [Number],
   ourBatchPrice: [Number],
+  doNotUpdate: Boolean,
 });
 
 module.exports = mongoose.model('Drug', drugSchema);

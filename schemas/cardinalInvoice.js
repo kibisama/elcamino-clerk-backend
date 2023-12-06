@@ -30,6 +30,10 @@ const cardinalInvoiceSchema = new Schema({
     type: [String],
     required: true,
   },
+  origQty: {
+    type: [String],
+    required: true,
+  },
   orderQty: {
     type: [String],
     required: true,

@@ -299,7 +299,7 @@ const cardinalPuppet = async () => {
       }
       await setRandomDelay(
         _page,
-        `Updateing Product Detail (CIN: ${targetCIN ?? cin})`,
+        `Updating Product Detail [1/2] (CIN: ${targetCIN ?? cin})`,
       );
 
       // Purchase History Tab내 정보 수집
@@ -310,6 +310,11 @@ const cardinalPuppet = async () => {
       )[0].click();
 
       // DetailedView모드로 변경 페이지 로드 대기
+      let cardinalHistInvoiceDate = [];
+      let cardinalHistShipQty = [];
+      let cardinalHistUnitCost = [];
+      let cardinalHistTotalCost = [];
+      let cardinalHistInvoiceNum = [];
       while (true) {
         await new Promise((r) => setTimeout(r, 3000));
         const viewSelector = await _page.$x(
@@ -320,65 +325,70 @@ const cardinalPuppet = async () => {
           break;
         }
       }
-
       while (true) {
         await new Promise((r) => setTimeout(r, 3000));
         const dataTableFound = await _page.$x(
           '//th[@class= "psrDataTableBorder"] //span[contains(text(), "Order Date")]',
         );
+        //
         if (dataTableFound.length > 0) {
-          break;
+          const noPurchaseHistory = await page.$x(
+            '//div[contains(text(), "No purchase history found")]',
+          );
+          if (noPurchaseHistory.length > 0) {
+            break;
+          } else {
+            while (true) {
+              const _cardinalHistInvoiceDate = await findTextsByXPath(
+                _page,
+                '//td[@class= "dataTableColDtlInvoice cahTableCellBorder"] //span[@class= "outputText"]',
+              );
+              if (_cardinalHistInvoiceDate.length > 0) {
+                cardinalHistInvoiceDate = _cardinalHistInvoiceDate;
+                cardinalHistShipQty = await findTextsByXPath(
+                  _page,
+                  '//td[@class= "dataTableColDtlShipQty cahTableCellBorder"] //span[@class= "outputText"]',
+                );
+                cardinalHistUnitCost = await findTextsByXPath(
+                  _page,
+                  '//td[@class= "dataTableColDtlUnitCost cahTableCellBorder"] //span[@class= "outputText"]',
+                );
+                cardinalHistTotalCost = await findTextsByXPath(
+                  _page,
+                  '//td[@class= "dataTableColDtlTotalCost cahTableCellBorder"] //span[@class= "outputText"]',
+                );
+                cardinalHistInvoiceNum = await findTextsByXPath(
+                  _page,
+                  '//td[@class= "dataTableColDtlInvoiceNum cahTableCellBorder"] //span[@class= "outputText"]',
+                );
+                break;
+              } else {
+                await new Promise((r) => setTimeout(r, 500));
+              }
+            }
+            break;
+          }
         }
       }
 
-      let cardinalHistInvoiceDate = [];
-      let cardinalHistShipQty = [];
-      let cardinalHistUnitCost = [];
-      let cardinalHistTotalCost = [];
-      let cardinalHistInvoiceNum = [];
-      const noPurchaseHistory = await page.$x(
-        '//div[contains(text(), "No purchase history found")]',
-      );
-      if (noPurchaseHistory.length === 0) {
-        // cardinalCostLastPurchase = Number(
-        //   (
-        //     await findTextByXPath(
-        //       _page,
-        //       '//span[contains(text(), "Cost of last purchase:")] /.. /.. //span[@class= "outputText"]',
-        //       0,
-        //     )
-        //   ).replace(/[$,]/g, ''),
-        // );
-        // purchaseHistoryDate = (
-        //   await findTextsByXPath(
-        //     _page,
-        //     '//td[@class= "dataTableColHistMonth cahTableCellBorder"] //span[@class= "outputText"]',
-        //   )
-        // )
-        //   .map((v, i, a) => (i % 2 === 0 ? `${v} ${a[i + 1]}` : ''))
-        //   .filter((v) => v !== '');
+      // cardinalCostLastPurchase = Number(
+      //   (
+      //     await findTextByXPath(
+      //       _page,
+      //       '//span[contains(text(), "Cost of last purchase:")] /.. /.. //span[@class= "outputText"]',
+      //       0,
+      //     )
+      //   ).replace(/[$,]/g, ''),
+      // );
+      // purchaseHistoryDate = (
+      //   await findTextsByXPath(
+      //     _page,
+      //     '//td[@class= "dataTableColHistMonth cahTableCellBorder"] //span[@class= "outputText"]',
+      //   )
+      // )
+      //   .map((v, i, a) => (i % 2 === 0 ? `${v} ${a[i + 1]}` : ''))
+      //   .filter((v) => v !== '');
 
-        cardinalHistInvoiceDate = await findTextsByXPath(
-          _page,
-          '//td[@class= "dataTableColDtlInvoice cahTableCellBorder"] //span[@class= "outputText"]',
-        );
-        cardinalHistShipQty = await findTextsByXPath(
-          _page,
-          '//td[@class= "dataTableColDtlShipQty cahTableCellBorder"] //span[@class= "outputText"]',
-        );
-        cardinalHistUnitCost = await findTextsByXPath(
-          _page,
-          '//td[@class= "dataTableColDtlUnitCost cahTableCellBorder"] //span[@class= "outputText"]',
-        );
-        cardinalHistTotalCost = await findTextsByXPath(
-          _page,
-          '//td[@class= "dataTableColDtlTotalCost cahTableCellBorder"] //span[@class= "outputText"]',
-        );
-        cardinalHistInvoiceNum = await findTextsByXPath(
-          _page,
-          '//td[@class= "dataTableColDtlInvoiceNum cahTableCellBorder"] //span[@class= "outputText"]',
-        );
-      }
       const dateLastUpdatedCardinal = new Date(Date.now());
       const result = await Drug.findOneAndUpdate(
         { ndc },
@@ -409,15 +419,19 @@ const cardinalPuppet = async () => {
         { new: true, upsert: true },
       ).catch((e) => console.log(e));
 
+      await setRandomDelay(
+        _page,
+        `Updating Product Detail [2/2] (CIN: ${targetCIN ?? cin})`,
+      );
       switch (from) {
         case 'Invoice Detail':
           await (
             await _page.$x("//span[contains(text(), 'Invoice Detail')]")
           )[0].click();
+          await _page.waitForNavigation(waitForOptions);
           break;
         default:
       }
-      await _page.waitForNavigation(waitForOptions);
       await setRandomDelay(
         _page,
         `Updated Product Detail (CIN: ${targetCIN ?? cin}) Successfully`,
@@ -523,6 +537,10 @@ const cardinalPuppet = async () => {
       if (item.includes(null)) {
         throw new Error('Item CIN not found in DB');
       }
+      const origQty = await findTextsByXPath(
+        _page,
+        '//td[@class= "columnLgOrigQty cahTableCellBorder"] //span',
+      );
 
       const orderQty = await findTextsByXPath(
         _page,
@@ -542,6 +560,7 @@ const cardinalPuppet = async () => {
           csoNumber,
           item,
           cost,
+          origQty,
           orderQty,
           shipQty,
           omitCode,
