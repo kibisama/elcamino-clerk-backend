@@ -7,31 +7,43 @@ const Drug = require('../schemas/drug');
 const router = express.Router();
 
 router.post('/drugs/search', async (req, res, next) => {
-  const { _id, cin, ndc, upc, term } = req.body;
+  const { upc, ndc, cin, labelName } = req.body;
   // const results = await Drug.find({ $text: { $search: term, $ } });
-
   // TODO: 자동완성에 필요한 데이터만 Select 후 send한다?
   let results = [];
   switch (true) {
-    case !!cin:
-      break;
-    case !!ndc:
+    case !!labelName:
+      results = await Drug.find({
+        $or: [{ labelName: { $regex: '^' + labelName, $options: 'i' } }],
+      });
       break;
     case !!upc:
+      const _upc = await Drug.findOne({
+        upc,
+      });
+      if (_upc) {
+        results[0] = _upc;
+      }
       break;
-    case !!term:
+    case !!cin:
+      const _cin = await Drug.findOne({
+        cin,
+      });
+      if (_cin) {
+        results[0] = _cin;
+      }
+      break;
+    case !!ndc:
       results = await Drug.find({
-        $or: [{ labelName: { $regex: '^' + term, $options: 'i' } }],
+        $or: [{ ndc: { $regex: '^' + ndc, $options: 'i' } }],
       });
       break;
     default:
-      res.send({ error: 'Invalid Query' });
   }
-
   if (results.length > 0) {
     res.send({ error: null, results });
   } else {
-    res.send({ error: 'No Search Results' });
+    res.send({ error: 'No Search Results', results });
   }
 });
 
