@@ -10,7 +10,7 @@ const manageCSOSReport = async (req, res, next) => {
     clickOrderHistoryLink,
     clickHomeLink,
   } = req.app.get('cardinalPuppet');
-  const { item, poDate, csoNumber } = req.body;
+  const { item, poDate, shipDate, csoNumber } = req.body;
   await clickOrderHistoryLink(page);
 
   const link = await page.$x(
@@ -61,7 +61,7 @@ const manageCSOSReport = async (req, res, next) => {
     await input[0].type(poDate);
     await newPage.keyboard.press('Enter');
     await input[1].click({ clickCount: 3 });
-    await input[1].type(poDate);
+    await input[1].type(shipDate);
     await newPage.keyboard.press('Enter');
     await setRandomDelay(newPage, 'Input Date Range');
   }
