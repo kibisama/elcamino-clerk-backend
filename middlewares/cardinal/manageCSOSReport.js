@@ -58,10 +58,15 @@ const manageCSOSReport = async (req, res, next) => {
     // csoNumber를 직접 입력하는 대신 날짜를 입력한다.
     // await input[0].type(csoNumber);
     await input[0].click({ clickCount: 3 });
+    await new Promise((r) => setTimeout(r, 500));
     await input[0].type(poDate);
+    await new Promise((r) => setTimeout(r, 500));
     await newPage.keyboard.press('Enter');
+    await new Promise((r) => setTimeout(r, 500));
     await input[1].click({ clickCount: 3 });
+    await new Promise((r) => setTimeout(r, 500));
     await input[1].type(shipDate);
+    await new Promise((r) => setTimeout(r, 500));
     await newPage.keyboard.press('Enter');
     await setRandomDelay(newPage, 'Input Date Range');
   }
