@@ -28,6 +28,7 @@ const cardinalPuppet = async () => {
       console.log(`waitTime[${msg}]: `, setTime, ' ms');
       return setTime;
     };
+
     // XPath를 사용 해 element를 검색하고 첫번째 결과(혹은 두번째 인수로 전달 된 n번째 결과)의 텍스트를 반환하는 함수
     const findTextByXPath = async (_page = page, xPath, i = 0) => {
       const els = await _page.$x(xPath);
@@ -465,6 +466,12 @@ const cardinalPuppet = async () => {
         1,
       );
       const invoiceDate = _invoiceDate.substring(0, _invoiceDate.indexOf(' '));
+      const _orderDate = await findTextByXPath(
+        _page,
+        '//td[@class= "topPanelGridColumnTwoSmall"] //span',
+        1,
+      );
+      const orderDate = _orderDate.substring(0, _orderDate.indexOf(' '));
 
       let invoiceType;
       const poNumber = await findTextByXPath(
@@ -556,6 +563,7 @@ const cardinalPuppet = async () => {
         { invoiceNumber },
         {
           invoiceDate,
+          orderDate,
           invoiceType,
           csoNumber,
           item,

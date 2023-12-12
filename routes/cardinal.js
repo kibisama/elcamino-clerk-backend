@@ -2,6 +2,7 @@ const express = require('express');
 
 const checkCardinalInvoice = require('../middlewares/cardinal/checkCardinalInvoice');
 const reloadCardinal = require('../middlewares/cardinal/reloadCardinal');
+const manageCSOSReport = require('../middlewares/cardinal/manageCSOSReport');
 
 const CardinalInvoice = require('../schemas/cardinalInvoice');
 
@@ -14,7 +15,7 @@ router.post('/checkInvoice', async (req, res, next) => {
       'item',
     );
     if (results.length > 0) {
-      res.send({ error: null, results });
+      return res.send({ error: null, results });
     } else {
       await checkCardinalInvoice(req, res, next);
     }
@@ -22,5 +23,6 @@ router.post('/checkInvoice', async (req, res, next) => {
     await checkCardinalInvoice(req, res, next);
   }
 });
+router.post('/reportCSOS', manageCSOSReport);
 
 module.exports = router;

@@ -1,6 +1,3 @@
-const Drug = require('../../schemas/drug');
-const CardinalInvoice = require('../../schemas/cardinalInvoice');
-
 const checkCardinalInvoice = async (req, res, next) => {
   const {
     waitForOptions,
@@ -52,6 +49,6 @@ const checkCardinalInvoice = async (req, res, next) => {
     data.error = 'Invoice Not Found';
   }
   await clickHomeLink(page);
-  res.send(data);
+  return res.send(data);
 };
 module.exports = checkCardinalInvoice;

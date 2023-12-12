@@ -10,6 +10,10 @@ const cardinalInvoiceSchema = new Schema({
     required: true,
     unique: true,
   },
+  orderDate: {
+    type: String,
+    required: true,
+  },
   invoiceDate: {
     type: String,
     required: true,
@@ -21,6 +25,7 @@ const cardinalInvoiceSchema = new Schema({
   csoNumber: {
     type: String,
   },
+  csosReported: Boolean,
   item: {
     type: [ObjectId],
     required: true,

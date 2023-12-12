@@ -10,7 +10,6 @@ const drugSchema = new Schema({
   },
   ndc: {
     type: String,
-    required: true,
     unique: true,
   },
   upc: {
