@@ -11,10 +11,12 @@ const url = 'https://orderexpress.cardinalhealth.com/';
 
 const cardinalPuppet = async () => {
   const waitForOptions = { timeout: 0, waitUntil: 'networkidle0' };
+  const browserOptions = {
+    headless: false,
+    defaultViewport: null,
+  };
   try {
-    const browser = await puppeteer.launch({
-      headless: false,
-    });
+    const browser = await puppeteer.launch(browserOptions);
     const page = await browser.newPage();
     await page.goto(url, waitForOptions);
 

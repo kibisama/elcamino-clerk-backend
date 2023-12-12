@@ -18,7 +18,7 @@ const manageCSOSReport = async (req, res, next) => {
   );
   if (link.length > 0) {
     await link[0].click();
-    await new Promise((r) => setTimeout(r, 3000));
+    await new Promise((r) => setTimeout(r, 5000));
   }
 
   let newPage;
@@ -32,7 +32,7 @@ const manageCSOSReport = async (req, res, next) => {
   }
 
   while (true) {
-    await new Promise((r) => setTimeout(r, 26000));
+    await new Promise((r) => setTimeout(r, 24000));
     const _utn = await newPage.$x(
       "//td[@class= 'u-text-align-right'] //div[@class= 'u-float-left']",
     );
@@ -43,7 +43,7 @@ const manageCSOSReport = async (req, res, next) => {
     await newPage.close();
     await new Promise((r) => setTimeout(r, 1000));
     await link[0].click();
-    await new Promise((r) => setTimeout(r, 3000));
+    await new Promise((r) => setTimeout(r, 5000));
     const pages = await browser.pages();
     if (pages.length > 2) {
       newPage = pages[2];
@@ -59,15 +59,17 @@ const manageCSOSReport = async (req, res, next) => {
     // await input[0].type(csoNumber);
     await input[0].click({ clickCount: 3 });
     await input[0].type(poDate);
+    await newPage.keyboard.press('Enter');
     await input[1].click({ clickCount: 3 });
     await input[1].type(poDate);
+    await newPage.keyboard.press('Enter');
     await setRandomDelay(newPage, 'Input Date Range');
   }
   const updateRange = await newPage.$x(
     '//button[contains(text(), "Update Range")]',
   );
   if (updateRange.length > 0) {
-    updateRange[0].click();
+    updateRange[0].click({ clickCount: 2 });
     await new Promise((r) => setTimeout(r, 15000));
     await setRandomDelay(newPage, 'Update Range');
   }
@@ -75,6 +77,7 @@ const manageCSOSReport = async (req, res, next) => {
   let button;
   while (true) {
     await new Promise((r) => setTimeout(r, 3000));
+    await setRandomDelay(newPage, 'Waiting for Search Results');
     const _button = await newPage.$x(
       `//a //span[@class= "highlight" and contains(text(), "${csoNumber}")]`,
     );
