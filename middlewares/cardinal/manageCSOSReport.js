@@ -70,21 +70,19 @@ const manageCSOSReport = async (req, res, next) => {
   );
   if (updateRange.length > 0) {
     updateRange[0].click({ clickCount: 2 });
-    await new Promise((r) => setTimeout(r, 15000));
+    await new Promise((r) => setTimeout(r, 5000));
     await setRandomDelay(newPage, 'Update Range');
   }
 
   let button;
   while (true) {
-    await new Promise((r) => setTimeout(r, 3000));
     await setRandomDelay(newPage, 'Waiting for Search Results');
-    const _button = await newPage.$x(
-      `//a //span[@class= "highlight" and contains(text(), "${csoNumber}")]`,
-    );
+    const _button = await newPage.$x(`//a [contains(text(), "${csoNumber}")]`);
     if (_button.length > 0) {
       button = _button[0];
       break;
     }
+    await new Promise((r) => setTimeout(r, 3000));
   }
 
   // 만약 Order Status 가 Received 라면 데이터베이스 업데이트 후 리턴한다.
@@ -176,6 +174,7 @@ const manageCSOSReport = async (req, res, next) => {
   if (saveButton.length > 0) {
     await saveButton[0].click();
   }
+  await setRandomDelay(newPage, 'Report Saved Successfully');
 
   // TODO: 이하 페이지 종료후 홈화면 복귀는 중복코드이므로 cardinalPuppet 내부 메서드로 추가하여 사용하자.
   const results = await CardinalInvoice.findOneAndUpdate(
