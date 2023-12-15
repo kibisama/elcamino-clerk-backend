@@ -25,8 +25,8 @@ const manageCSOSReport = async (req, res, next) => {
   while (true) {
     await new Promise((r) => setTimeout(r, 1000));
     const pages = await browser.pages();
-    if (pages.length > 2) {
-      newPage = pages[2];
+    if (pages.length > 1) {
+      newPage = pages[1];
       break;
     }
   }
@@ -58,17 +58,13 @@ const manageCSOSReport = async (req, res, next) => {
     // csoNumber를 직접 입력하는 대신 날짜를 입력한다.
     // await input[0].type(csoNumber);
     await input[0].click({ clickCount: 3 });
-    await new Promise((r) => setTimeout(r, 500));
     await input[0].type(poDate);
-    await new Promise((r) => setTimeout(r, 500));
     await newPage.keyboard.press('Enter');
     await new Promise((r) => setTimeout(r, 500));
     await input[1].click({ clickCount: 3 });
-    await new Promise((r) => setTimeout(r, 500));
     await input[1].type(shipDate);
-    await new Promise((r) => setTimeout(r, 500));
     await newPage.keyboard.press('Enter');
-    await setRandomDelay(newPage, 'Input Date Range');
+    await new Promise((r) => setTimeout(r, 500));
   }
   const updateRange = await newPage.$x(
     '//button[contains(text(), "Update Range")]',
@@ -93,7 +89,7 @@ const manageCSOSReport = async (req, res, next) => {
   // 만약 Order Status 가 Received 라면 데이터베이스 업데이트 후 리턴한다.
   // TODO: 리팩터링: 중복코드 포함
   const orderStatus = await newPage.$x(
-    `//a[contains(text(), "${csoNumber}")] /.. /.. //td[contains(text(), "Received")]`,
+    `//a[contains(text(), "${csoNumber}")] /.. /.. //td[@class= "u-text-align-left u-color-alt" and contains(text(), "Received")]`,
   );
   if (orderStatus.length > 0) {
     await setRandomDelay(newPage, 'Order Status is already "Received"');
@@ -116,7 +112,7 @@ const manageCSOSReport = async (req, res, next) => {
 
   await button.click();
   // 딜레이 생략가능
-  await newPage.waitForNavigation(waitForOptions);
+  await new Promise((r) => setTimeout(r, 3000));
   await setRandomDelay(newPage, 'CSOS Report Found');
 
   // 각 item 별로 value를 비교하고 동일한 경우 체크표시
@@ -185,7 +181,7 @@ const manageCSOSReport = async (req, res, next) => {
   const results = await CardinalInvoice.findOneAndUpdate(
     { csoNumber },
     {
-      csosReported: true,
+      isCSOSReported: true,
     },
     { new: true, upsert: true },
   )

@@ -17,7 +17,8 @@ const cardinalPuppet = async () => {
   };
   try {
     const browser = await puppeteer.launch(browserOptions);
-    const page = await browser.newPage();
+    const [page] = await browser.pages();
+    // const page = await browser.newPage();
     await page.goto(url, waitForOptions);
 
     // 랜덤 딜레이와 로그를 생성하는 함수
@@ -206,6 +207,7 @@ const cardinalPuppet = async () => {
               `//td[@class= "columnLgCin cahTableCellBorder"] //a[contains(text(), "${targetCIN}")]`,
             )
           )[0].click();
+          // 이하 waitfornavigation 함수 대신 페이지에 특정 정보가 로드될 때까지 기다리는 알고리즘을 사용하자
           await _page.waitForNavigation(waitForOptions);
           break;
         default:

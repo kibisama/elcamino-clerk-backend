@@ -25,7 +25,7 @@ const cardinalInvoiceSchema = new Schema({
   csoNumber: {
     type: String,
   },
-  csosReported: Boolean,
+  isCSOSReported: Boolean,
   item: {
     type: [ObjectId],
     required: true,
