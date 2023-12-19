@@ -1,3 +1,7 @@
+const initPuppet = require('./initPuppet');
+const xPaths = require('./cardinalXPaths');
+const cardinalPuppetFn = require('./cardinalPuppetFn');
+
 const cardinalPuppet = async () => {
   const name = 'CardinalPuppet';
   const id = process.env.CARDINAL_USERNAME;
@@ -16,7 +20,7 @@ const cardinalPuppet = async () => {
     logOnFunc,
   );
 
-  return { browser, page };
+  return { browser, page, xPaths, cardinalPuppetFn };
 };
 
 module.exports = cardinalPuppet;
