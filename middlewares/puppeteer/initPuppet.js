@@ -10,15 +10,7 @@ const extendPage = require('./extendPage');
  * @returns {Promise<{Promise<Browser>,Promise<Page>}>}
  */
 const initPuppet = async (initOptions, logOnFunc, minWaitingTime = 15000) => {
-  const { name, color, url } = initOptions;
-  const browserOptions = {
-    headless: false,
-    defaultViewport: null,
-  };
-  const waitForOptions = {
-    timeout: 0,
-    waitUntil: 'networkidle0',
-  };
+  const { name, color, url, browserOptions, waitForOptions } = initOptions;
   try {
     console.log(`${chalk[color](name + ':')} Initializing Puppeteer...`);
     const browser = await puppeteer.launch(browserOptions);
@@ -31,7 +23,7 @@ const initPuppet = async (initOptions, logOnFunc, minWaitingTime = 15000) => {
     const page = await browser.newPage();
     await (await browser.pages())[0].close();
     await page.goto(url, waitForOptions);
-    await logOnFunc(page);
+    await logOnFunc(page, browser);
 
     await page.waitForPageRendering(minWaitingTime);
     console.log(`${chalk[color](name + ':')} 로그인 성공`);

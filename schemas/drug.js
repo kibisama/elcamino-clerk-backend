@@ -5,14 +5,8 @@ const drugSchema = new Schema({
   tradeName: String,
   labelName: String,
   genericName: String,
-  cin: {
-    type: String,
-    unique: true,
-  },
-  ndc: {
-    type: String,
-    unique: true,
-  },
+  cin: String,
+  ndc: String,
   upc: {
     type: String,
     unique: true,
@@ -51,6 +45,9 @@ const drugSchema = new Schema({
   cardinalHistTotalCost: [String],
   cardinalHistInvoiceNum: [String],
   cardinalHistOrderMethod: [String],
+  cardinalWACEffectiveDate: [String],
+  cardinalWAC: [String],
+  cardinalWACPercentChange: [String],
   dateLastUpdatedCardinal: Date,
   dateLastUpdatedKeySource: Date,
   dateLastUpdatedSmartSource: Date,
@@ -60,7 +57,12 @@ const drugSchema = new Schema({
   ourBatchQty: [Number],
   ourBatchPrice: [Number],
   keySourceCost: String,
+  keySourceAltCost: [String],
+  smartSourceName: String,
   smartSourceCost: String,
+  smartSourceAltName: [String],
+  smartSourceAltCost: [String],
+  smartSourceAvailable: [String],
 });
 
 module.exports = mongoose.model('Drug', drugSchema);

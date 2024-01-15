@@ -7,6 +7,10 @@ const xPaths = {
     noSearchResults: `//span[contains(text(), "We're sorry. We weren't able to find")]`,
     hideIneligible: '//span[contains(text(), "Hide Ineligible")]',
   },
+  tempNavi: {
+    invoiceDetail: '//a //span[contains(text(), "Invoice Detail")]',
+    orderHistory: '//a //span[contains(text(), "Order History")]',
+  },
   orderHistory: {
     manageCSOS: '//a[contains(text(), "Manage E222 & CSOS Orders")]',
     invoiceViewSelector: '//td[@class= "selectDateTblCol2"] //select',
@@ -91,7 +95,6 @@ const xPaths = {
       '//td[@class="dataTableColPricePrdDtlAltSub cahTableCellBorder"] //span[@class= "outputText" and position()= 2]',
     altContract:
       '//td[@class="dataTableColContractPrdDtlAltSub cahTableCellBorder"] //span[@class= "outputText"]',
-    purchaseHistSumTable: '//th[@class= "psrDataTableBorder"]',
     noPurchaseHist: '//div[contains(text(), "No purchase history found")]',
     viewSelector: '//option[contains(text(), "24 Month Summary View")] /..',
     purchaseHistDetailedTable:
@@ -112,14 +115,19 @@ const xPaths = {
       '//td[@class= "dataTableColDtlInvoiceNum cahTableCellBorder"] //span[@class= "outputText"]',
     cardinalHistOrderMethod:
       '//td[@class= "dataTableColDtlOrderDate cahTableCellBorder"] //span[@class= "outputText" and not(ancestor::tr/@class= "displayBlockPrdPuch")]',
+    wacEffectiveDate:
+      '//table[@id= "tablePhWACHistory"] //tbody //td[position()= 1]',
+    wac: '//table[@id= "tablePhWACHistory"] //tbody //td[position()= 2] //span',
+    wacPercentChange:
+      '//table[@id= "tablePhWACHistory"] //tbody //td[position()= 4] //span',
   },
   invoiceDetail: {
     invoiceNumber:
-      '//span[contains(text(), "Invoice #:") /.. /.. //td[@class= "topPanelGridColumnTwo"] //span[@class= "outputText"]',
+      '//span[contains(text(), "Invoice #:")] /.. /.. //td[@class= "topPanelGridColumnTwo"] //span[@class= "outputText"]',
     invoiceDate:
       '//tr[position()= 2] //td[@class= "topPanelGridColumnTwo"] //span',
     orderNumber:
-      '//span[contains(text(), "Order #:") /.. /.. //td[@class= "topPanelGridColumnTwoSmall"] //span[@class= "outputText"]',
+      '//span[contains(text(), "Order #:")] /.. /.. //td[@class= "topPanelGridColumnTwoSmall"] //span[@class= "outputText"]',
     orderDate:
       '//tr[position()= 2] //td[@class= "topPanelGridColumnTwoSmall"] //span',
     poNumber:
@@ -142,6 +150,14 @@ const xPaths = {
       '//td[@class= "columnLgSelect cahTableCellBorder" and position()= 18]',
     confirmNumberWithNoClassCol:
       '//td[@class= "columnLgPrice_right cahTableCellBorder" and position()= 17]',
+    totalShipped:
+      '//span[contains(text(), "Total Pieces Shipped")] /.. /.. //td[position()= 2] //span[@class= "outputText"]',
+    totalAmount:
+      '//span[contains(text(), "Amount")] /.. /.. //td[position()= 2] //span[@class= "outputText"]',
+  },
+  csosReport: {
+    utn: '//td[@class= "u-text-align-right"] //div[@class= "u-float-left"]',
+    dateInput: '//div[@class= "react-datepicker__input-container"] //input',
   },
 };
 

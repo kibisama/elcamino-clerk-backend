@@ -80,20 +80,17 @@ const extendPage = (page, name, color) => {
   /**
    * Generates a random delay and a log.
    * 랜덤 딜레이를 생성하고 로그를 기록합니다.
-   * @param {number} delay
+   * @param {number} _delay
    * @param {string} log
    * @returns {Promise<undefined>}
    */
   page.setRandomDelay = async (delay = 0, log = '') => {
-    const setTime = await page.evaluate(async () => {
-      const randomDelay = (Math.random() * 3 + delay / 1000) * 1000;
-      await new Promise((r) => setTimeout(r, randomDelay));
-      return randomDelay;
-    });
+    const randomDelay = (Math.random() * 3 + delay / 1000) * 1000;
+    await new Promise((r) => setTimeout(r, randomDelay));
     console.log(
       `${chalk[color](name + ':')} ${chalk.greenBright(
         log,
-      )} [delay: ${setTime} ms]`,
+      )} [delay: ${randomDelay} ms]`,
     );
   };
   /**
@@ -189,6 +186,50 @@ const extendPage = (page, name, color) => {
     }
     if (els.length === 0) {
       console.log(`${chalk[color](name + ':')} XPath'${xPath}' not found`);
+      if (typeof callback === 'function') {
+        callback();
+      }
+    }
+    return els;
+  };
+  /**
+   * Waits until all the target elements found.
+   * Element를 찾을 때까지 기다립니다. 각 element의 innerText 값들의 배열을 배열로 반환합니다.
+   * @param {[string]} xPathArray
+   * @param {number} timeout
+   * @param {Function} callback callback to be called if XPath not found from the page
+   * @returns {Promise<Array<string[]>>}
+   */
+  page.waitForElements = async (xPathArray, timeout = 30000, callback) => {
+    const interval = 1000;
+    const maxCount = timeout / interval;
+    let count = 0;
+    let els = [];
+    while (count++ < maxCount) {
+      let _els = await Promise.all(
+        xPathArray.map(async (xPath) => await page.$x(xPath)),
+      );
+      const elsLength = _els.map((els) => els.length);
+      if (elsLength.includes(0)) {
+        console.log(
+          `${chalk[color](name + ':')} XPath'${
+            xPathArray[elsLength.indexOf(0)]
+          }' not found`,
+        );
+        await new Promise((r) => setTimeout(r, interval));
+      } else {
+        els = await Promise.all(
+          _els.map(async (v, i) => await page.findTexts(xPathArray[i])),
+        );
+        break;
+      }
+    }
+    if (els.length === 0) {
+      console.log(
+        `${chalk[color](
+          name + ':',
+        )} one or more elements from xPathArray not found`,
+      );
       if (typeof callback === 'function') {
         callback();
       }

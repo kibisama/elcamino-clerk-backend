@@ -22,10 +22,12 @@ dotenv.config();
 // Routers
 const indexRouter = require('./routes/index');
 const cardinalRouter = require('./routes/cardinal');
+const smartSourceRouter = require('./routes/smartSource');
 const mongodRouter = require('./routes/mongod');
 
 const cardinalPuppet = require('./middlewares/puppeteer/cardinalPuppet');
 const smartSourcePuppet = require('./middlewares/puppeteer/smartSourcePuppet');
+const keySourcePuppet = require('./middlewares/puppeteer/keySourcePuppet');
 
 const connect = require('./schemas');
 const app = express();
@@ -49,6 +51,7 @@ app.use(express.urlencoded({ extended: false }));
 
 app.use('/', indexRouter);
 app.use('/cardinal', cardinalRouter);
+app.use('/smartSource', smartSourceRouter);
 app.use('/mongod', mongodRouter);
 
 app.use((req, res, next) => {
@@ -66,7 +69,8 @@ app.use((err, req, res, next) => {
 
 const createServer = async () => {
   app.set('cardinalPuppet', await cardinalPuppet());
-  // app.set('smartSourcePuppet', await smartSourcePuppet());
+  app.set('smartSourcePuppet', await smartSourcePuppet());
+  // app.set('keySourcePuppet', await keySourcePuppet());
   app.listen(app.get('port'), () => {
     console.log(app.get('port'), '번 포트에서 대기 중');
   });
