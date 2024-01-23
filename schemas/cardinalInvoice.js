@@ -12,7 +12,6 @@ const cardinalInvoiceSchema = new Schema({
   },
   invoiceDate: String,
   orderDate: String,
-  orderDate: String,
   poNumber: String,
   invoiceType: String,
   item: {

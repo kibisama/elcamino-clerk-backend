@@ -49,20 +49,31 @@ const drugSchema = new Schema({
   cardinalWAC: [String],
   cardinalWACPercentChange: [String],
   dateLastUpdatedCardinal: Date,
-  dateLastUpdatedKeySource: Date,
   dateLastUpdatedSmartSource: Date,
   isGeneric: Boolean,
   lastDateCardinalPriceMatched: Date,
   ourPricePerUnit: Number,
   ourBatchQty: [Number],
   ourBatchPrice: [Number],
+  // KeySource Data
+  keySourceDesc: String,
   keySourceCost: String,
+  keySourceStock: String,
+  keySourceExp: String,
+  keySourceAltDesc: [String],
   keySourceAltCost: [String],
+  keySourceAltStock: [String],
+  keySourceAltExp: [String],
+  dateLastUpdatedKeySource: Date,
+  // SmartSource Data
   smartSourceName: String,
   smartSourceCost: String,
+  smartSourcePerDose: String,
+  smartSourcePerDose: String,
   smartSourceAltName: [String],
+  smartSourceAltNDC: [String],
   smartSourceAltCost: [String],
-  smartSourceAvailable: [String],
+  smartSourceAltPerDose: [String],
 });
 
 module.exports = mongoose.model('Drug', drugSchema);

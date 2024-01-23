@@ -6,6 +6,7 @@ const smartSourcePuppetFn = function ({ waitForOptions, xPaths }) {
       let smartSourceName;
       let smartSourceCost;
       let smartSourceAltName = new Array(altNDC.length);
+      let smartSourceAltNDC = new Array(altNDC.length);
       let smartSourceAltCost = new Array(altNDC.length);
       const searchBar = await page.$x(xPaths.menu.searchBar);
       if (searchBar.length > 0) {

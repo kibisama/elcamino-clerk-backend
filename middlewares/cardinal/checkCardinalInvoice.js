@@ -56,13 +56,25 @@ const checkCardinalInvoice = async (req, res, next) => {
 
   if (secondSrcUpdate) {
     const items = _items.filter(
-      (item) => item.productType === 'Rx' || 'C3' || 'C4' || 'C5',
+      (item) =>
+        (item.productType === 'Rx' || 'C3' || 'C4' || 'C5') &&
+        item.returnPackaging === 'ambient',
     );
-    const { browser, page, waitForOptions, xPaths, functions } =
-      req.app.get('smartSourcePuppet');
-    for (let i = 0; i < items.length; i++) {
-      await functions.collectCostData(page, items[i].ndc, items[i].altNDC);
-    }
+    const puppets = ['smartSourcePuppet', 'keySourcePuppet'];
+    await Promise.all(
+      puppets.map(async (puppet) => {
+        const { browser, page, waitForOptions, xPaths, functions } =
+          req.app.get(puppet);
+        for (let i = 0; i < items.length; i++) {
+          await functions.collectCostData(page, items[i].ndc, items[i].altNDC);
+        }
+      }),
+    );
+    // const { browser, page, waitForOptions, xPaths, functions } =
+    //   req.app.get('smartSourcePuppet');
+    // for (let i = 0; i < items.length; i++) {
+    //   await functions.collectCostData(page, items[i].ndc, items[i].altNDC);
+    // }
   }
 
   const results = await CardinalInvoice.find({ invoiceDate: date }).populate(

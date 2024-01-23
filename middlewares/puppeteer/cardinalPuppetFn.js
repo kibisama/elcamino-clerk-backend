@@ -313,15 +313,17 @@ const cardinalPuppetFn = function ({ waitForOptions, xPaths }) {
       const invoiceNumber = (
         await page.findTexts(xPaths.invoiceDetail.invoiceNumber)
       )[0];
-      const invoiceDate = (
+      const _invoiceDate = (
         await page.findTexts(xPaths.invoiceDetail.invoiceDate)
       )[0];
+      const invoiceDate = _invoiceDate.substring(0, _invoiceDate.indexOf(' '));
       const orderNumber = (
         await page.findTexts(xPaths.invoiceDetail.orderNumber)
       )[0];
-      const orderDate = (
+      const _orderDate = (
         await page.findTexts(xPaths.invoiceDetail.orderDate)
       )[0];
+      const orderDate = _orderDate.substring(0, _orderDate.indexOf(' '));
       const poNumber = (await page.findTexts(xPaths.invoiceDetail.poNumber))[0];
       const cin = await page.findTexts(xPaths.invoiceDetail.cin);
       const origQty = await page.findTexts(xPaths.invoiceDetail.origQty);

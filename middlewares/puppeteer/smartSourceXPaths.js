@@ -10,7 +10,7 @@ const xPaths = {
       '//div[@class= "name"] //div[@class= "tray-indicator-product tooltipNotify"] //a',
     acqCost: '//div[@class= "indicator-acq-cost"]',
     ndcSearchResult:
-      '//div[contains(text(), "No products found")] | //div[@class= "indicator-acq-cost"]',
+      '//div[contains(text(), "No products found")] | //div[@class= "name"] //div[@class= "tray-indicator-product tooltipNotify"]',
     findAltButton: '//button[contains(text(), "Find Alternatives")]',
     autocompleteBox: '//ul[@tabindex= "0"]',
   },
