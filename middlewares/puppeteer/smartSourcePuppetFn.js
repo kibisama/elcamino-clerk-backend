@@ -5,9 +5,12 @@ const smartSourcePuppetFn = function ({ waitForOptions, xPaths }) {
     async collectCostData(page, ndc, altNDC) {
       let smartSourceName;
       let smartSourceCost;
-      let smartSourceAltName = new Array(altNDC.length);
-      let smartSourceAltNDC = new Array(altNDC.length);
-      let smartSourceAltCost = new Array(altNDC.length);
+      let smartSourceAltBACName = '';
+      let smartSourceAltBACNDC = '';
+      let smartSourceAltBACCost = '';
+      let smartSourceAltBPDName = '';
+      let smartSourceAltBPDNDC = '';
+      let smartSourceAltBPDCost = '';
       const searchBar = await page.$x(xPaths.menu.searchBar);
       if (searchBar.length > 0) {
         await page.typeInputEl(ndc, searchBar[0]);
@@ -28,9 +31,9 @@ const smartSourcePuppetFn = function ({ waitForOptions, xPaths }) {
               `//div[@class= "results-wrapper"] //span[@class= "term" and contains(text(), "${altNDC[i]}")]`,
               xPaths.catalogSearch.ndcSearchResult,
             );
-            smartSourceAltCost[i] =
-              (await page.findTexts(xPaths.catalogSearch.acqCost))[0] ?? '';
-            if (!smartSourceAltCost[i]) {
+            const smartAltName =
+              (await page.findTexts(xPaths.catalogSearch.productName))[0] ?? '';
+            if (!smartAltName) {
               await page.setRandomDelay(
                 0,
                 `no results for searching ${altNDC[i]} [NDC: ${ndc}]`,
@@ -44,46 +47,46 @@ const smartSourcePuppetFn = function ({ waitForOptions, xPaths }) {
               await page.clickEl(xPaths.menu.searchInputClear);
               await new Promise((r) => setTimeout(r, 1000));
             }
-            const els = await this.findAltItems(page, ndc);
-            if (els.length === 0) {
+            const altButton = await page.$x(xPaths.catalogSearch.findAltButton);
+            if (altButton.length > 0) {
+              const els = await this.findAltItems(page, ndc);
+              if (els.length === 0) {
+                break;
+              }
+              smartSourceAltBACName = els[0];
+              smartSourceAltBACNDC = els[1];
+              smartSourceAltBACCost = els[2];
+              smartSourceAltBPDName = els[3];
+              smartSourceAltBPDNDC = els[4];
+              smartSourceAltBPDCost = els[5];
               break;
             }
-            for (let j = i + 1; j < altNDC.length; j++) {
-              for (let k = 0; k < els[1].length; k++) {
-                if (altNDC[j] === els[1][k]) {
-                  smartSourceAltName[j] = els[0][k];
-                  smartSourceAltCost[j] = els[2][k];
-                  break;
-                }
-              }
-            }
-            break;
           }
         }
       } else {
-        const els = await this.findAltItems(page, ndc);
-        if (els.length > 0) {
-          altNDC.forEach((v, i) => {
-            const j = els[1].indexOf(v);
-            if (j > -1) {
-              smartSourceAltName[i] = els[0][j];
-              smartSourceAltCost[i] = els[2][j];
-            } else {
-              smartSourceAltName[i] = '';
-              smartSourceAltCost[i] = '';
-            }
-          });
+        const altButton = await page.$x(xPaths.catalogSearch.findAltButton);
+        if (altButton.length > 0) {
+          const els = await this.findAltItems(page, ndc);
+          if (els.length > 0) {
+            smartSourceAltBACName = els[0];
+            smartSourceAltBACNDC = els[1];
+            smartSourceAltBACCost = els[2];
+            smartSourceAltBPDName = els[3];
+            smartSourceAltBPDNDC = els[4];
+            smartSourceAltBPDCost = els[5];
+          }
         }
       }
       const dateLastUpdatedSmartSource = new Date(Date.now());
       const result = await Drug.findOneAndUpdate(
         { ndc },
         {
-          smartSourceName,
-          smartSourceCost,
-          smartSourceAltName,
-          smartSourceAltCost,
-          dateLastUpdatedSmartSource,
+          smartSourceAltBACName,
+          smartSourceAltBACNDC,
+          smartSourceAltBACCost,
+          smartSourceAltBPDName,
+          smartSourceAltBPDNDC,
+          smartSourceAltBPDCost,
         },
         { new: true, upsert: true },
       ).catch((e) => console.log(e));
@@ -93,27 +96,49 @@ const smartSourcePuppetFn = function ({ waitForOptions, xPaths }) {
         `updated SmartSource data for [NDC: ${ndc}]. returning to home screen...`,
       );
       await page.clickEl(xPaths.menu.homeLink);
-      await page.waitForNavigation(waitForOptions);
+      await new Promise((r) => setTimeout(r, 1000));
       await page.waitForPageRendering();
-
       return result;
     },
     async findAltItems(page, ndc) {
       await page.clickEl(xPaths.catalogSearch.findAltButton);
-      let els = await page.waitForElements([
-        xPaths.findAlternatives.altName,
-        xPaths.findAlternatives.altNDC,
-        xPaths.findAlternatives.altACQCost,
-      ]);
-      if (els.length > 0) {
-        els[1] = els[1].map((ndc) => ndc.substring(7));
-      } else {
-        const noAlt = await page.$x(xPaths.findAlternatives.noAlt);
-        if (noAlt.length > 0) {
-          els = [];
-        }
+      await new Promise((r) => setTimeout(r, 1000));
+
+      await page.waitForElement(xPaths.findAlternatives.header);
+
+      const altBACName = (
+        await page.findTexts(xPaths.findAlternatives.altBACName)
+      )[0];
+      let altBACNDC = (
+        await page.findTexts(xPaths.findAlternatives.altBACNDC)
+      )[0];
+      const altBACCost = (
+        await page.findTexts(xPaths.findAlternatives.altBACCost)
+      )[0];
+      const altBPDName = (
+        await page.findTexts(xPaths.findAlternatives.altBPDName)
+      )[0];
+      let altBPDNDC = (
+        await page.findTexts(xPaths.findAlternatives.altBPDNDC)
+      )[0];
+      const altBPDCost = (
+        await page.findTexts(xPaths.findAlternatives.altBPDCost)
+      )[0];
+
+      if (altBACNDC) {
+        altBACNDC = altBACNDC.substring(7);
       }
-      await page.setRandomDelay(0, `found SmartSource AltItems[NDC: ${ndc}]`);
+      if (altBPDNDC) {
+        altBPDNDC = altBPDNDC.substring(7);
+      }
+      const els = [
+        altBACName,
+        altBACNDC,
+        altBACCost,
+        altBPDName,
+        altBPDNDC,
+        altBPDCost,
+      ];
       await page.clickEl(xPaths.findAlternatives.closeModalButton);
       return els;
     },

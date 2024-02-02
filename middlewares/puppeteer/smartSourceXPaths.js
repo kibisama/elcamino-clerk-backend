@@ -10,17 +10,23 @@ const xPaths = {
       '//div[@class= "name"] //div[@class= "tray-indicator-product tooltipNotify"] //a',
     acqCost: '//div[@class= "indicator-acq-cost"]',
     ndcSearchResult:
-      '//div[contains(text(), "No products found")] | //div[@class= "name"] //div[@class= "tray-indicator-product tooltipNotify"]',
+      '//div[contains(text(), "No products found")] | //div[@class= "plp-items-wrapper"] //div[@class= "product-listing box no-padding"] //div[@class= "name"] //div[@class= "tray-indicator-product tooltipNotify"]',
     findAltButton: '//button[contains(text(), "Find Alternatives")]',
     autocompleteBox: '//ul[@tabindex= "0"]',
   },
   findAlternatives: {
-    altName:
-      '//div[contains(text(), "All Alternatives (")] /.. /.. //div[position()= 3] //div[@class= "name"] //div[@class= "tray-indicator-product tooltipNotify"] //a',
-    altNDC:
-      '//div[contains(text(), "All Alternatives (")] /.. /.. //div[position()= 3] //strong[contains(text(), "NDC")]',
-    altACQCost:
-      '//div[contains(text(), "All Alternatives (")] /.. /.. //div[position()= 3] //div[@class= "indicator-acq-cost"]',
+    altBACName:
+      '//div[contains(text(), "Best Acquisition Cost")] /.. //div[@class= "name"] //div[@class= "tray-indicator-product tooltipNotify"] //a',
+    altBACNDC:
+      '//div[contains(text(), "Best Acquisition Cost")] /.. //strong[contains(text(), "NDC")]',
+    altBACCost:
+      '//div[contains(text(), "Best Acquisition Cost")] /.. //div[@class= "indicator-acq-cost"]',
+    altBPDName:
+      '//div[contains(text(), "Best Price per Dose")] /.. //div[@class= "tray-indicator-product tooltipNotify"] //a',
+    altBPDNDC:
+      '//div[contains(text(), "Best Price per Dose")] /.. //strong[contains(text(), "NDC")]',
+    altBPDCost:
+      '//div[contains(text(), "Best Price per Dose")] /.. //div[@class= "indicator-acq-cost"]',
     closeModalButton: '//div[@title= "Close Find Alternatives dialog"]',
     header: '//h2[contains(text(), "Find Alternatives")]',
     noAlt:

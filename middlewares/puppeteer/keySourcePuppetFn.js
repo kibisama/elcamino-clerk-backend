@@ -15,7 +15,6 @@ const keySourcePuppetFn = function ({ waitForOptions, xPaths }) {
       const searchBar = await page.$x(xPaths.menu.searchBar);
       if (searchBar.length > 0) {
         await page.typeInputEl(ndc, searchBar[0]);
-        await page.waitForNavigation(waitForOptions);
         const results = await page.waitForElement(
           xPaths.catalogSearch.searchResults,
         );
@@ -39,18 +38,14 @@ const keySourcePuppetFn = function ({ waitForOptions, xPaths }) {
                 xPaths.catalogSearch.searchResults,
               );
               if (results.length > 0) {
-                keySourceAltDesc.push(
-                  (await page.findTexts(xPaths.catalogSearch.desc))[0] ?? '',
-                );
-                keySourceAltCost.push(
-                  (await page.findTexts(xPaths.catalogSearch.price))[0] ?? '',
-                );
-                keySourceAltStock.push(
-                  (await page.findTexts(xPaths.catalogSearch.noStock))[0] ?? '',
-                );
-                keySourceAltExp.push(
-                  (await page.findTexts(xPaths.catalogSearch.exp))[0] ?? '',
-                );
+                keySourceAltDesc[i] =
+                  (await page.findTexts(xPaths.catalogSearch.desc))[0] ?? '';
+                keySourceAltCost[i] =
+                  (await page.findTexts(xPaths.catalogSearch.price))[0] ?? '';
+                keySourceAltStock[i] =
+                  (await page.findTexts(xPaths.catalogSearch.noStock))[0] ?? '';
+                keySourceAltExp[i] =
+                  (await page.findTexts(xPaths.catalogSearch.exp))[0] ?? '';
                 await page.setRandomDelay(
                   0,
                   `collecting KeySource AltCost[NDC: ${ndc}] [${i + 1}/${
@@ -62,7 +57,7 @@ const keySourcePuppetFn = function ({ waitForOptions, xPaths }) {
           }
         }
         await page.clickEl(xPaths.menu.logo);
-        await page.waitForNavigation(waitForOptions);
+        await new Promise((r) => setTimeout(r, 1000));
         await page.waitForPageRendering();
       }
       const dateLastUpdatedKeySource = new Date(Date.now());

@@ -17,7 +17,20 @@ const updateProductDetails = async (req, res, next) => {
     await page.waitForNavigation(waitForOptions);
     await page.waitForPageRendering();
   }
-  if (result?.productType === 'Rx' || 'C3' || 'C4' || 'C5') {
+  if (
+    (result?.productType === 'Rx' || 'C3' || 'C4' || 'C5') &&
+    result.returnPackaging === 'Ambient'
+  ) {
+    // const puppets = ['smartSourcePuppet', 'keySourcePuppet'];
+    // await Promise.all(
+    //   puppets.map(async (puppet) => {
+    //     const { browser, page, waitForOptions, xPaths, functions } =
+    //       req.app.get(puppet);
+    //     for (let i = 0; i < items.length; i++) {
+    //       await functions.collectCostData(page, items[i].ndc, items[i].altNDC);
+    //     }
+    //   }),
+    // );
     const { browser, page, waitForOptions, xPaths, functions } =
       req.app.get('smartSourcePuppet');
     await functions.collectCostData(page, result.ndc, result.altNDC);

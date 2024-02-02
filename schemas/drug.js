@@ -49,7 +49,6 @@ const drugSchema = new Schema({
   cardinalWAC: [String],
   cardinalWACPercentChange: [String],
   dateLastUpdatedCardinal: Date,
-  dateLastUpdatedSmartSource: Date,
   isGeneric: Boolean,
   lastDateCardinalPriceMatched: Date,
   ourPricePerUnit: Number,
@@ -68,12 +67,13 @@ const drugSchema = new Schema({
   // SmartSource Data
   smartSourceName: String,
   smartSourceCost: String,
-  smartSourcePerDose: String,
-  smartSourcePerDose: String,
-  smartSourceAltName: [String],
-  smartSourceAltNDC: [String],
-  smartSourceAltCost: [String],
-  smartSourceAltPerDose: [String],
+  smartSourceAltBACName: String,
+  smartSourceAltBACNDC: String,
+  smartSourceAltBACCost: String,
+  smartSourceAltBPDName: String,
+  smartSourceAltBPDNDC: String,
+  smartSourceAltBPDCost: String,
+  dateLastUpdatedSmartSource: Date,
 });
 
 module.exports = mongoose.model('Drug', drugSchema);
