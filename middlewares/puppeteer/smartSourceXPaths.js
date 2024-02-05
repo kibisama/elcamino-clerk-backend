@@ -7,8 +7,10 @@ const xPaths = {
   catalogSearch: {
     // noProductsFound: '//div[contains(text(), "No products found"]',
     productName:
-      '//div[@class= "name"] //div[@class= "tray-indicator-product tooltipNotify"] //a',
-    acqCost: '//div[@class= "indicator-acq-cost"]',
+      '//div[@class= "plp-items-wrapper"] //div[@class= "product-listing box no-padding"] //div[@class= "name"] //div[@class= "tray-indicator-product tooltipNotify"] //a',
+    acqCost:
+      '//div[@class= "plp-items-wrapper"] //div[@class= "product-listing box no-padding"] //div[@class= "indicator-acq-cost"]',
+    ndc: '//div[@class= "plp-items-wrapper"] //div[@class= "product-listing box no-padding"] //div[@class= "ndc"] //strong',
     ndcSearchResult:
       '//div[contains(text(), "No products found")] | //div[@class= "plp-items-wrapper"] //div[@class= "product-listing box no-padding"] //div[@class= "name"] //div[@class= "tray-indicator-product tooltipNotify"]',
     findAltButton: '//button[contains(text(), "Find Alternatives")]',

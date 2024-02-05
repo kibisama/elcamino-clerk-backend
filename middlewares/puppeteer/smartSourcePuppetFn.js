@@ -60,6 +60,14 @@ const smartSourcePuppetFn = function ({ waitForOptions, xPaths }) {
               smartSourceAltBPDNDC = els[4];
               smartSourceAltBPDCost = els[5];
               break;
+            } else {
+              smartSourceAltBPDName =
+                (await page.findTexts(xPaths.catalogSearch.productName))[0] ??
+                '';
+              smartSourceAltBPDName =
+                (await page.findTexts(xPaths.catalogSearch.ndc))[0] ?? '';
+              smartSourceAltBPDCost =
+                (await page.findTexts(xPaths.catalogSearch.acqCost))[0] ?? '';
             }
           }
         }
@@ -81,12 +89,15 @@ const smartSourcePuppetFn = function ({ waitForOptions, xPaths }) {
       const result = await Drug.findOneAndUpdate(
         { ndc },
         {
+          smartSourceName,
+          smartSourceCost,
           smartSourceAltBACName,
           smartSourceAltBACNDC,
           smartSourceAltBACCost,
           smartSourceAltBPDName,
           smartSourceAltBPDNDC,
           smartSourceAltBPDCost,
+          dateLastUpdatedSmartSource,
         },
         { new: true, upsert: true },
       ).catch((e) => console.log(e));
