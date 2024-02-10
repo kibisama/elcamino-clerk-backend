@@ -158,6 +158,16 @@ const xPaths = {
   csosReport: {
     utn: '//td[@class= "u-text-align-right"] //div[@class= "u-float-left"]',
     dateInput: '//div[@class= "react-datepicker__input-container"] //input',
+    updateRangeButton: '//button[contains(text(), "Update Range")]',
+    cin: '//td[@class= "u-text-align-left c_supplier_item_number"]',
+    inputReceivedQty:
+      '//td[@class= "u-text-align-right c_quantityreceived"] //input',
+    inputDateReceived:
+      '//div[@class= "react-datepicker__input-container"] //input',
+    agreeCheckbox:
+      '//div[@class= "order-edit__controls  u-noprint"] //input[@type= "checkbox"]',
+    saveButton: '//button[contains(text(), "Save")]',
+    saveMsg: '//strong[contains(text(), "Your changes have been saved")]',
   },
 };
 

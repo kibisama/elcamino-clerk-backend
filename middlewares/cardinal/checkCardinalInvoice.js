@@ -55,11 +55,13 @@ const checkCardinalInvoice = async (req, res, next) => {
   await page.waitForPageRendering();
 
   if (secondSrcUpdate) {
-    const items = _items.filter(
-      (item) =>
-        (item.productType === 'Rx' || 'C3' || 'C4' || 'C5') &&
-        item.returnPackaging === 'Ambient',
-    );
+    const productTypeRange = ['Rx', 'C3', 'C4', 'C5'];
+    const items = _items.filter((item) => {
+      return (
+        productTypeRange.includes(item.productType) &&
+        item.returnPackaging === 'Ambient'
+      );
+    });
     // const puppets = ['smartSourcePuppet', 'keySourcePuppet'];
     // await Promise.all(
     //   puppets.map(async (puppet) => {

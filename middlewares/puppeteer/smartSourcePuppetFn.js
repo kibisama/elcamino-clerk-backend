@@ -27,6 +27,7 @@ const smartSourcePuppetFn = function ({ waitForOptions, xPaths }) {
           const newSearchBar = await page.$x(xPaths.menu.searchBar);
           if (newSearchBar.length > 0) {
             await page.typeInputEl(altNDC[i], newSearchBar[0]);
+            await page.setRandomDelay(0, `searching results for ${altNDC[i]}`);
             await page.waitForElements(
               `//div[@class= "results-wrapper"] //span[@class= "term" and contains(text(), "${altNDC[i]}")]`,
               xPaths.catalogSearch.ndcSearchResult,
@@ -36,7 +37,7 @@ const smartSourcePuppetFn = function ({ waitForOptions, xPaths }) {
             if (!smartAltName) {
               await page.setRandomDelay(
                 0,
-                `no results for searching ${altNDC[i]} [NDC: ${ndc}]`,
+                `no results found from the keyword: ${altNDC[i]}`,
               );
               continue;
             }
@@ -45,7 +46,7 @@ const smartSourcePuppetFn = function ({ waitForOptions, xPaths }) {
             );
             if (autocompleteBox.length > 0) {
               await page.clickEl(xPaths.menu.searchInputClear);
-              await new Promise((r) => setTimeout(r, 1000));
+              await page.setRandomDelay(0, 'closing Autocompletebox');
             }
             const altButton = await page.$x(xPaths.catalogSearch.findAltButton);
             if (altButton.length > 0) {
@@ -107,14 +108,12 @@ const smartSourcePuppetFn = function ({ waitForOptions, xPaths }) {
         `updated SmartSource data for [NDC: ${ndc}]. returning to home screen...`,
       );
       await page.clickEl(xPaths.menu.homeLink);
-      await new Promise((r) => setTimeout(r, 1000));
-      await page.waitForPageRendering();
+      await page.waitForPageRendering(3000);
       return result;
     },
     async findAltItems(page, ndc) {
       await page.clickEl(xPaths.catalogSearch.findAltButton);
       await new Promise((r) => setTimeout(r, 1000));
-
       await page.waitForElement(xPaths.findAlternatives.header);
 
       const altBACName = (

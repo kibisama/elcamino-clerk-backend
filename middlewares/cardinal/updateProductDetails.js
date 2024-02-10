@@ -17,8 +17,9 @@ const updateProductDetails = async (req, res, next) => {
     await page.waitForNavigation(waitForOptions);
     await page.waitForPageRendering();
   }
+  const productTypeRange = ['Rx', 'C3', 'C4', 'C5'];
   if (
-    (result?.productType === 'Rx' || 'C3' || 'C4' || 'C5') &&
+    productTypeRange.includes(result?.productType) &&
     result.returnPackaging === 'Ambient'
   ) {
     // const puppets = ['smartSourcePuppet', 'keySourcePuppet'];

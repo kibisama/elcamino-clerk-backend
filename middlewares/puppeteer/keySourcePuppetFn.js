@@ -52,6 +52,11 @@ const keySourcePuppetFn = function ({ waitForOptions, xPaths }) {
                     altNDC.length
                   }]`,
                 );
+              } else {
+                await page.setRandomDelay(
+                  0,
+                  `Result not found for [NDC: ${ndc}] ${altNDC[i]}]`,
+                );
               }
             }
           }

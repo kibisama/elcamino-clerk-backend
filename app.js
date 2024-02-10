@@ -71,7 +71,7 @@ app.use((err, req, res, next) => {
 
 const createServer = async () => {
   app.set('cardinalPuppet', await cardinalPuppet());
-  app.set('smartSourcePuppet', await smartSourcePuppet());
+  // app.set('smartSourcePuppet', await smartSourcePuppet());
   // app.set('keySourcePuppet', await keySourcePuppet());
   app.listen(app.get('port'), () => {
     console.log(app.get('port'), '번 포트에서 대기 중');
